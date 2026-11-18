@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% block title %}Dashboard | Precision Packaging{% endblock %}
+{% block content %}
+<header class="page-header">
+  <div>
+    <p class="eyebrow">BUSINESS OVERVIEW</p>
+    <h1>Dashboard</h1>
+    <p class="muted">A consolidated view of Precision Packaging Corner.</p>
+  </div>
+  <div class="header-chip"><span class="live-dot"></span> {{ connection_message }}</div>
+</header>
+
+<section class="welcome-panel">
+  <div>
+    <p class="eyebrow light">PRECISION PACKAGING CORNER</p>
+    <h2>Manage every outlet from one place.</h2>
+    <p>Track products, stock movement and sales across Kikubo, Nabweru and Mbra.</p>
+  </div>
+  <div class="welcome-icon">▦</div>
+</section>
+
+<section class="stats-grid">
+  <article class="stat-card">
+    <div class="stat-top"><span>Active products</span><span class="stat-icon">▤</span></div>
+    <strong>{{ "{:,}".format(totals.products) }}</strong>
+    <small>Product catalogue</small>
+  </article>
+  <article class="stat-card">
+    <div class="stat-top"><span>Outlets</span><span class="stat-icon">⌂</span></div>
+    <strong>{{ totals.outlets }}</strong>
+    <small>Operating locations</small>
+  </article>
+  <article class="stat-card">
+    <div class="stat-top"><span>Units in stock</span><span class="stat-icon">▦</span></div>
+    <strong>{{ "{:,}".format(totals.stock_units) }}</strong>
+    <small>Across connected locations</small>
+  </article>
+</section>
+
+<section class="content-card">
+  <div class="section-heading">
+    <div><h3>Recent stock activity</h3><p class="muted">Latest recorded stock movements</p></div>
+    <span class="subtle-tag">LIVE RECORDS</span>
+  </div>
+  {% if recent_movements %}
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Movement</th><th>Product</th><th>Location</th><th>Quantity</th><th>Status</th><th>Date</th></tr></thead>
+      <tbody>
+      {% for movement in recent_movements %}
+        <tr>
+          <td>{{ movement.movement_type|replace('_',' ')|title }}</td>
+          <td>{{ movement.products.product_name if movement.products else '—' }}</td>
+          <td>{{ movement.stock_locations.location_name if movement.stock_locations else '—' }}</td>
+          <td>{{ movement.quantity }}</td>
+          <td><span class="status">{{ movement.status|title }}</span></td>
+          <td>{{ movement.occurred_at[:10] if movement.occurred_at else '—' }}</td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+    <div class="empty-state"><div class="empty-icon">↗</div><strong>No stock activity yet</strong><p>Stock movements will appear here once opening balances and transactions are entered.</p></div>
+  {% endif %}
+</section>
+{% endblock %}
