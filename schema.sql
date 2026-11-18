@@ -1,206 +1,208 @@
-create extension if not exists pgcrypto;
+CREATE EXTENSION IF NOT EXISTS pgcrypto;
 
-do $$ begin
-  create type public.user_role as enum ('owner_admin','outlet_attendant');
-exception when duplicate_object then null; end $$;
+DO $$ BEGIN
+  CREATE TYPE public.user_role AS ENUM ('owner_admin','outlet_attendant');
+EXCEPTION WHEN duplicate_object THEN NULL; END $$;
 
-do $$ begin
-  create type public.transaction_status as enum ('draft','submitted','approved','rejected','voided');
-exception when duplicate_object then null; end $$;
+DO $$ BEGIN
+  CREATE TYPE public.transaction_status AS ENUM ('draft','submitted','approved','rejected','voided');
+EXCEPTION WHEN duplicate_object THEN NULL; END $$;
 
-do $$ begin
-  create type public.stock_movement_type as enum
+DO $$ BEGIN
+  CREATE TYPE public.stock_movement_type AS ENUM
   ('opening_balance','receipt','transfer_out','transfer_in','sale','return_in','damage','adjustment_in','adjustment_out');
-exception when duplicate_object then null; end $$;
+EXCEPTION WHEN duplicate_object THEN NULL; END $$;
 
-create table if not exists public.outlets (
-  id uuid primary key default gen_random_uuid(),
-  code text unique not null,
-  name text unique not null,
-  active boolean not null default true,
-  created_at timestamptz not null default now()
+CREATE TABLE IF NOT EXISTS public.outlets (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  code text UNIQUE NOT NULL,
+  name text UNIQUE NOT NULL,
+  active boolean NOT NULL DEFAULT true,
+  created_at timestamptz NOT NULL DEFAULT now()
 );
 
-insert into public.outlets(code,name) values
+INSERT INTO public.outlets(code,name) VALUES
  ('KIK','Kikubo'),('NAB','Nabweru'),('MBR','Mbra')
-on conflict (code) do nothing;
+ON CONFLICT (code) DO NOTHING;
 
-create table if not exists public.profiles (
-  user_id uuid primary key references auth.users(id) on delete cascade,
-  full_name text not null,
-  role public.user_role not null,
-  outlet_id uuid references public.outlets(id),
-  active boolean not null default true,
-  created_at timestamptz not null default now(),
-  constraint attendant_must_have_outlet check (role <> 'outlet_attendant' or outlet_id is not null)
+-- Render PostgreSQL has no Supabase auth.users table. This table replaces it.
+CREATE TABLE IF NOT EXISTS public.app_users (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  email text UNIQUE NOT NULL,
+  password_hash text NOT NULL,
+  full_name text NOT NULL,
+  role public.user_role NOT NULL DEFAULT 'outlet_attendant',
+  outlet_id uuid REFERENCES public.outlets(id),
+  active boolean NOT NULL DEFAULT true,
+  created_at timestamptz NOT NULL DEFAULT now(),
+  CONSTRAINT attendant_must_have_outlet CHECK (role <> 'outlet_attendant' OR outlet_id IS NOT NULL)
 );
 
-create table if not exists public.products (
-  id uuid primary key default gen_random_uuid(),
-  sku text unique not null,
-  product_name text not null,
-  category text not null,
+CREATE TABLE IF NOT EXISTS public.products (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  sku text UNIQUE NOT NULL,
+  product_name text NOT NULL,
+  category text NOT NULL,
   colour text,
   size_label text,
   size_grams integer,
-  valve_configuration text not null default 'not_applicable',
-  recovery_rate_ugx numeric(14,2) check (recovery_rate_ugx is null or recovery_rate_ugx >= 0),
-  piece_selling_price_ugx numeric(14,2) check (piece_selling_price_ugx is null or piece_selling_price_ugx >= 0),
-  bulk_pack_size integer not null default 50 check (bulk_pack_size > 0),
-  bulk_pack_price_ugx numeric(14,2) check (bulk_pack_price_ugx is null or bulk_pack_price_ugx >= 0),
-  purchase_cost_ugx numeric(14,2) check (purchase_cost_ugx is null or purchase_cost_ugx >= 0),
-  reorder_level integer not null default 0 check (reorder_level >= 0),
-  active boolean not null default true,
+  valve_configuration text NOT NULL DEFAULT 'not_applicable',
+  recovery_rate_ugx numeric(14,2) CHECK (recovery_rate_ugx IS NULL OR recovery_rate_ugx >= 0),
+  piece_selling_price_ugx numeric(14,2) CHECK (piece_selling_price_ugx IS NULL OR piece_selling_price_ugx >= 0),
+  bulk_pack_size integer NOT NULL DEFAULT 50 CHECK (bulk_pack_size > 0),
+  bulk_pack_price_ugx numeric(14,2) CHECK (bulk_pack_price_ugx IS NULL OR bulk_pack_price_ugx >= 0),
+  purchase_cost_ugx numeric(14,2) CHECK (purchase_cost_ugx IS NULL OR purchase_cost_ugx >= 0),
+  reorder_level integer NOT NULL DEFAULT 0 CHECK (reorder_level >= 0),
+  active boolean NOT NULL DEFAULT true,
   source_description text,
-  created_at timestamptz not null default now()
+  created_at timestamptz NOT NULL DEFAULT now()
 );
 
-create index if not exists products_analytics_idx
-on public.products(category,colour,size_grams,valve_configuration);
+CREATE INDEX IF NOT EXISTS products_analytics_idx
+ON public.products(category,colour,size_grams,valve_configuration);
 
-create table if not exists public.stock_locations (
-  id uuid primary key default gen_random_uuid(),
-  location_code text unique not null,
-  location_name text not null,
-  location_type text not null check (location_type in ('central_store','outlet')),
-  outlet_id uuid unique references public.outlets(id),
-  active boolean not null default true,
-  check ((location_type = 'outlet' and outlet_id is not null) or
-         (location_type = 'central_store' and outlet_id is null))
+CREATE TABLE IF NOT EXISTS public.stock_locations (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  location_code text UNIQUE NOT NULL,
+  location_name text NOT NULL,
+  location_type text NOT NULL CHECK (location_type IN ('central_store','outlet')),
+  outlet_id uuid UNIQUE REFERENCES public.outlets(id),
+  active boolean NOT NULL DEFAULT true,
+  CHECK ((location_type = 'outlet' AND outlet_id IS NOT NULL) OR
+         (location_type = 'central_store' AND outlet_id IS NULL))
 );
 
-insert into public.stock_locations(location_code,location_name,location_type,outlet_id)
-select o.code,o.name,'outlet',o.id from public.outlets o
-on conflict (location_code) do nothing;
+INSERT INTO public.stock_locations(location_code,location_name,location_type,outlet_id)
+SELECT o.code,o.name,'outlet',o.id FROM public.outlets o
+ON CONFLICT (location_code) DO NOTHING;
 
-create table if not exists public.stock_balances (
-  location_id uuid not null references public.stock_locations(id),
-  product_id uuid not null references public.products(id),
-  quantity_on_hand integer not null default 0 check (quantity_on_hand >= 0),
-  updated_at timestamptz not null default now(),
-  primary key(location_id,product_id)
+CREATE TABLE IF NOT EXISTS public.stock_balances (
+  location_id uuid NOT NULL REFERENCES public.stock_locations(id),
+  product_id uuid NOT NULL REFERENCES public.products(id),
+  quantity_on_hand integer NOT NULL DEFAULT 0 CHECK (quantity_on_hand >= 0),
+  updated_at timestamptz NOT NULL DEFAULT now(),
+  PRIMARY KEY(location_id,product_id)
 );
 
-create table if not exists public.stock_movements (
-  id uuid primary key default gen_random_uuid(),
-  location_id uuid not null references public.stock_locations(id),
-  product_id uuid not null references public.products(id),
-  movement_type public.stock_movement_type not null,
-  source_type text check (source_type in ('central_store','supplier_direct','outlet_transfer','opening_balance','other')),
+CREATE TABLE IF NOT EXISTS public.stock_movements (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  location_id uuid NOT NULL REFERENCES public.stock_locations(id),
+  product_id uuid NOT NULL REFERENCES public.products(id),
+  movement_type public.stock_movement_type NOT NULL,
+  source_type text CHECK (source_type IN ('central_store','supplier_direct','outlet_transfer','opening_balance','other')),
   supplier_name text,
-  quantity integer not null check (quantity > 0),
+  quantity integer NOT NULL CHECK (quantity > 0),
   unit_cost_ugx numeric(14,2),
   reference text,
-  related_movement_id uuid references public.stock_movements(id),
+  related_movement_id uuid REFERENCES public.stock_movements(id),
   notes text,
-  status public.transaction_status not null default 'submitted',
-  created_by uuid references public.profiles(user_id),
-  approved_by uuid references public.profiles(user_id),
-  occurred_at timestamptz not null default now(),
-  created_at timestamptz not null default now()
+  status public.transaction_status NOT NULL DEFAULT 'submitted',
+  created_by uuid REFERENCES public.app_users(id),
+  approved_by uuid REFERENCES public.app_users(id),
+  occurred_at timestamptz NOT NULL DEFAULT now(),
+  created_at timestamptz NOT NULL DEFAULT now()
 );
-create index if not exists stock_movements_period_idx on public.stock_movements(location_id,occurred_at);
-create index if not exists stock_movements_product_idx on public.stock_movements(product_id,occurred_at);
+CREATE INDEX IF NOT EXISTS stock_movements_period_idx ON public.stock_movements(location_id,occurred_at);
+CREATE INDEX IF NOT EXISTS stock_movements_product_idx ON public.stock_movements(product_id,occurred_at);
 
-create table if not exists public.daily_sales_reports (
-  id uuid primary key default gen_random_uuid(),
-  outlet_id uuid not null references public.outlets(id),
-  business_date date not null,
-  status public.transaction_status not null default 'draft',
-  submitted_by uuid references public.profiles(user_id),
+CREATE TABLE IF NOT EXISTS public.daily_sales_reports (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  outlet_id uuid NOT NULL REFERENCES public.outlets(id),
+  business_date date NOT NULL,
+  status public.transaction_status NOT NULL DEFAULT 'draft',
+  submitted_by uuid REFERENCES public.app_users(id),
   submitted_at timestamptz,
-  approved_by uuid references public.profiles(user_id),
+  approved_by uuid REFERENCES public.app_users(id),
   approved_at timestamptz,
   notes text,
-  device_submission_id text unique,
-  created_at timestamptz not null default now(),
-  updated_at timestamptz not null default now(),
-  unique(outlet_id,business_date)
+  device_submission_id text UNIQUE,
+  created_at timestamptz NOT NULL DEFAULT now(),
+  updated_at timestamptz NOT NULL DEFAULT now(),
+  UNIQUE(outlet_id,business_date)
 );
 
-create table if not exists public.daily_sales_lines (
-  id uuid primary key default gen_random_uuid(),
-  report_id uuid not null references public.daily_sales_reports(id) on delete cascade,
-  product_id uuid not null references public.products(id),
-  quantity_sold integer not null check (quantity_sold >= 0),
-  bulk_packs_sold integer not null default 0 check (bulk_packs_sold >= 0),
-  fixed_piece_price_ugx numeric(14,2) not null check (fixed_piece_price_ugx >= 0),
-  fixed_bulk_pack_price_ugx numeric(14,2) check (fixed_bulk_pack_price_ugx is null or fixed_bulk_pack_price_ugx >= 0),
-  bulk_pack_size integer not null default 50 check (bulk_pack_size > 0),
-  total_units_sold integer generated always as (quantity_sold + bulk_packs_sold * bulk_pack_size) stored,
-  line_revenue_ugx numeric(16,2) generated always as
-    (quantity_sold * fixed_piece_price_ugx + bulk_packs_sold * coalesce(fixed_bulk_pack_price_ugx,0)) stored,
-  unique(report_id,product_id)
+CREATE TABLE IF NOT EXISTS public.daily_sales_lines (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  report_id uuid NOT NULL REFERENCES public.daily_sales_reports(id) ON DELETE CASCADE,
+  product_id uuid NOT NULL REFERENCES public.products(id),
+  quantity_sold integer NOT NULL CHECK (quantity_sold >= 0),
+  bulk_packs_sold integer NOT NULL DEFAULT 0 CHECK (bulk_packs_sold >= 0),
+  fixed_piece_price_ugx numeric(14,2) NOT NULL CHECK (fixed_piece_price_ugx >= 0),
+  fixed_bulk_pack_price_ugx numeric(14,2) CHECK (fixed_bulk_pack_price_ugx IS NULL OR fixed_bulk_pack_price_ugx >= 0),
+  bulk_pack_size integer NOT NULL DEFAULT 50 CHECK (bulk_pack_size > 0),
+  total_units_sold integer GENERATED ALWAYS AS (quantity_sold + bulk_packs_sold * bulk_pack_size) STORED,
+  line_revenue_ugx numeric(16,2) GENERATED ALWAYS AS
+    (quantity_sold * fixed_piece_price_ugx + bulk_packs_sold * COALESCE(fixed_bulk_pack_price_ugx,0)) STORED,
+  UNIQUE(report_id,product_id)
 );
 
-create table if not exists public.sales_tenders (
-  id uuid primary key default gen_random_uuid(),
-  report_id uuid not null references public.daily_sales_reports(id) on delete cascade,
-  tender_type text not null check (tender_type in ('cash','mobile_money','bank','other')),
-  amount_ugx numeric(16,2) not null check (amount_ugx >= 0),
+CREATE TABLE IF NOT EXISTS public.sales_tenders (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  report_id uuid NOT NULL REFERENCES public.daily_sales_reports(id) ON DELETE CASCADE,
+  tender_type text NOT NULL CHECK (tender_type IN ('cash','mobile_money','bank','other')),
+  amount_ugx numeric(16,2) NOT NULL CHECK (amount_ugx >= 0),
   provider_or_reference text,
   notes text
 );
 
-create table if not exists public.stock_transfers (
-  id uuid primary key default gen_random_uuid(),
-  transfer_number text unique not null,
-  from_location_id uuid not null references public.stock_locations(id),
-  to_location_id uuid not null references public.stock_locations(id),
-  status public.transaction_status not null default 'draft',
-  dispatched_by uuid references public.profiles(user_id),
-  received_by uuid references public.profiles(user_id),
+CREATE TABLE IF NOT EXISTS public.stock_transfers (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  transfer_number text UNIQUE NOT NULL,
+  from_location_id uuid NOT NULL REFERENCES public.stock_locations(id),
+  to_location_id uuid NOT NULL REFERENCES public.stock_locations(id),
+  status public.transaction_status NOT NULL DEFAULT 'draft',
+  dispatched_by uuid REFERENCES public.app_users(id),
+  received_by uuid REFERENCES public.app_users(id),
   dispatched_at timestamptz,
   received_at timestamptz,
   notes text,
-  created_at timestamptz not null default now(),
-  check (from_location_id <> to_location_id)
+  created_at timestamptz NOT NULL DEFAULT now(),
+  CHECK (from_location_id <> to_location_id)
 );
 
-create table if not exists public.stock_transfer_lines (
-  id uuid primary key default gen_random_uuid(),
-  transfer_id uuid not null references public.stock_transfers(id) on delete cascade,
-  product_id uuid not null references public.products(id),
-  quantity_dispatched integer not null check (quantity_dispatched > 0),
-  quantity_received integer check (quantity_received is null or quantity_received >= 0),
-  unique(transfer_id,product_id)
+CREATE TABLE IF NOT EXISTS public.stock_transfer_lines (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  transfer_id uuid NOT NULL REFERENCES public.stock_transfers(id) ON DELETE CASCADE,
+  product_id uuid NOT NULL REFERENCES public.products(id),
+  quantity_dispatched integer NOT NULL CHECK (quantity_dispatched > 0),
+  quantity_received integer CHECK (quantity_received IS NULL OR quantity_received >= 0),
+  UNIQUE(transfer_id,product_id)
 );
 
-create table if not exists public.audit_log (
-  id bigint generated always as identity primary key,
-  actor_user_id uuid references public.profiles(user_id),
-  action text not null,
-  entity_table text not null,
+CREATE TABLE IF NOT EXISTS public.audit_log (
+  id bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  actor_user_id uuid REFERENCES public.app_users(id),
+  action text NOT NULL,
+  entity_table text NOT NULL,
   entity_id uuid,
   before_data jsonb,
   after_data jsonb,
-  occurred_at timestamptz not null default now()
+  occurred_at timestamptz NOT NULL DEFAULT now()
 );
 
-create table if not exists public.notification_preferences (
-  id uuid primary key default gen_random_uuid(),
-  user_id uuid references public.profiles(user_id),
-  channel text not null check (channel in ('in_app','email','whatsapp')),
+CREATE TABLE IF NOT EXISTS public.notification_preferences (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id uuid REFERENCES public.app_users(id),
+  channel text NOT NULL CHECK (channel IN ('in_app','email','whatsapp')),
   destination text,
-  event_key text not null,
-  enabled boolean not null default true,
-  unique(user_id,channel,event_key)
+  event_key text NOT NULL,
+  enabled boolean NOT NULL DEFAULT true,
+  UNIQUE(user_id,channel,event_key)
 );
 
-create table if not exists public.notifications (
-  id uuid primary key default gen_random_uuid(),
-  user_id uuid references public.profiles(user_id),
-  outlet_id uuid references public.outlets(id),
-  channel text not null,
-  event_key text not null,
-  title text not null,
-  message text not null,
-  delivery_status text not null default 'queued',
+CREATE TABLE IF NOT EXISTS public.notifications (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id uuid REFERENCES public.app_users(id),
+  outlet_id uuid REFERENCES public.outlets(id),
+  channel text NOT NULL,
+  event_key text NOT NULL,
+  title text NOT NULL,
+  message text NOT NULL,
+  delivery_status text NOT NULL DEFAULT 'queued',
   provider_reference text,
-  created_at timestamptz not null default now(),
+  created_at timestamptz NOT NULL DEFAULT now(),
   delivered_at timestamptz
 );
 
--- RLS is intentionally enabled only after the app's access policies and trusted
--- transaction functions have been reviewed. Do not expose the service-role key
--- to browsers. The first deployment uses server-side access only.
+-- Nabweru is one of the three outlets. It can receive/distribute stock AND record sales.
+-- No fourth warehouse is created by this schema.

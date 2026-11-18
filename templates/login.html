@@ -1,20 +1,14 @@
 {% extends "base.html" %}
 {% block title %}Sign in | Precision Packaging{% endblock %}
 {% block content %}
-<div class="login-wrap">
-  <div class="login-card">
-    <div class="brand-mark large">PPC</div>
-    <p class="eyebrow">PRECISION PACKAGING CORNER</p>
-    <h1>Welcome back</h1>
-    <p class="muted">Sign in to manage stock, sales and outlet operations.</p>
-    <form method="post">
-      <label>Email address</label>
-      <input type="email" name="email" placeholder="you@example.com" required>
-      <label>Password</label>
-      <input type="password" name="password" placeholder="Enter your password" required>
-      <button type="submit">Sign in <span>→</span></button>
-    </form>
-    <p class="login-foot">Kikubo · Nabweru · Mbra</p>
-  </div>
-</div>
+<section class="login-card">
+  <p class="eyebrow">WELCOME BACK</p>
+  <h1>Sign in</h1>
+  <p class="muted">Access the Precision Packaging Corner management system.</p>
+  <form method="post">
+    <label>Email address</label><input type="email" name="email" required autocomplete="username">
+    <label>Password</label><input type="password" name="password" required autocomplete="current-password">
+    <button type="submit" class="primary">Sign in</button>
+  </form>
+</section>
 {% endblock %}
