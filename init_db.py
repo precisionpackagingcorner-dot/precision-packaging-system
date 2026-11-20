@@ -31,7 +31,7 @@ with psycopg2.connect(DATABASE_URL) as conn:
         with seed_path.open(newline='', encoding='utf-8-sig') as f:
             for item in csv.DictReader(f):
                item_no = int(float(item['source_item_number'])) if item['source_item_number'] else None
-                price = item['source_price_ugx'] or None
+price = item['source_price_ugx'] or None
                 with conn.cursor() as cur:
                     cur.execute('''INSERT INTO public.products
                         (sku,product_name,category,source_item_number,source_price_ugx,
