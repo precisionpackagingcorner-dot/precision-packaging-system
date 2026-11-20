@@ -12,27 +12,35 @@ if not DATABASE_URL:
     raise RuntimeError("DATABASE_URL is required.")
 
 base = Path(__file__).resolve().parent
-schema_sql = (base / "schema.sql").read_text(encoding="utf-8")
+schema_file = base / "schema.sql"
+
+if not schema_file.exists():
+    raise RuntimeError("schema.sql was not found.")
+
+schema_sql = schema_file.read_text(encoding="utf-8")
 
 with psycopg2.connect(DATABASE_URL) as conn:
 
-    # Create the database tables and schema.
+    # Create the existing database schema.
     with conn.cursor() as cur:
         cur.execute(schema_sql)
 
-        # Add catalogue source fields without deleting existing records.
+        # Safely add catalogue source fields.
         cur.execute("""
             ALTER TABLE public.products
             ADD COLUMN IF NOT EXISTS source_item_number integer,
             ADD COLUMN IF NOT EXISTS source_price_ugx numeric(14,2),
             ADD COLUMN IF NOT EXISTS source_price_label text,
-            ADD COLUMN IF NOT EXISTS source_sheet text
+            ADD COLUMN IF NOT EXISTS source_sheet text,
+            ADD COLUMN IF NOT EXISTS source_description text
         """)
 
     # Create the owner account if it does not already exist.
     owner_email = os.environ.get("OWNER_EMAIL", "").strip().lower()
     owner_password = os.environ.get("OWNER_PASSWORD", "")
-    owner_name = os.environ.get("OWNER_FULL_NAME", "System Owner").strip()
+    owner_name = os.environ.get(
+        "OWNER_FULL_NAME", "System Owner"
+    ).strip()
 
     if owner_email and owner_password:
         with conn.cursor() as cur:
@@ -47,24 +55,53 @@ with psycopg2.connect(DATABASE_URL) as conn:
                 owner_name
             ))
 
-    # Import the August 2026 product catalogue.
+    # Import the product catalogue.
     seed_path = base / "catalogue_seed.csv"
 
     if seed_path.exists():
+
         with seed_path.open(
             newline="",
             encoding="utf-8-sig"
-        ) as f:
+        ) as csv_file:
 
-            for item in csv.DictReader(f):
+            reader = csv.DictReader(csv_file)
 
-                raw_item_no = item.get("source_item_number", "").strip()
-                item_no = int(float(raw_item_no)) if raw_item_no else None
+            required_columns = {
+                "sku",
+                "product_name",
+                "category",
+                "source_item_number",
+                "source_price_ugx",
+                "source_price_label",
+                "source_sheet",
+                "source_description"
+            }
 
-                raw_price = item.get("source_price_ugx", "").strip()
-                price = raw_price if raw_price else None
+            if not required_columns.issubset(set(reader.fieldnames or [])):
+                raise RuntimeError(
+                    "catalogue_seed.csv is missing required columns."
+                )
 
-                with conn.cursor() as cur:
+            with conn.cursor() as cur:
+
+                for item in reader:
+
+                    raw_item_no = (
+                        item.get("source_item_number") or ""
+                    ).strip()
+
+                    item_no = (
+                        int(float(raw_item_no))
+                        if raw_item_no else None
+                    )
+
+                    raw_price = (
+                        item.get("source_price_ugx") or ""
+                    ).strip()
+
+                    price = raw_price if raw_price else None
+
                     cur.execute("""
                         INSERT INTO public.products
                         (
@@ -90,5 +127,9 @@ with psycopg2.connect(DATABASE_URL) as conn:
                         item["source_description"]
                     ))
 
-print("Database schema and catalogue seed checked.")
+        print("Product catalogue import checked.")
+    else:
+        print("Catalogue seed file not found; import skipped.")
+
+print("Database schema and initialisation completed.")
 
