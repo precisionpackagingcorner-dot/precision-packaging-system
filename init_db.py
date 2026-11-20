@@ -26,27 +26,13 @@ with psycopg2.connect(DATABASE_URL) as conn:
                 VALUES (%s,%s,%s,'owner_admin',NULL,true) ON CONFLICT (email) DO NOTHING''',
                 (owner_email, generate_password_hash(owner_password), owner_name))
     # Import the source workbook's August 2026 product descriptions once, keyed by stable SKU.
-    seed_path = base / 'catalogue_seed.csv'
-            if seed_path.exists():
+       seed_path = base / 'catalogue_seed.csv'
+    if seed_path.exists():
         with seed_path.open(newline='', encoding='utf-8-sig') as f:
             for item in csv.DictReader(f):
                 item_no = int(float(item['source_item_number'])) if item['source_item_number'] else None
                 price = item['source_price_ugx'] or None
                 with conn.cursor() as cur:
-                    cur.execute('''INSERT INTO public.products
-                        (sku,product_name,category,source_item_number,source_price_ugx,
-                         source_price_label,source_sheet,source_description)
-                        VALUES (%s,%s,%s,%s,%s,%s,%s,%s)
-                        ON CONFLICT (sku) DO NOTHING''',
-                        (item['sku'],item['product_name'],item['category'],item_no,price,
-                         item['source_price_label'] or None,item['source_sheet'],item['source_description']))
-                    cur.execute('''INSERT INTO public.products
-                        (sku,product_name,category,source_item_number,source_price_ugx,
-                         source_price_label,source_sheet,source_description)
-                        VALUES (%s,%s,%s,%s,%s,%s,%s,%s)
-                        ON CONFLICT (sku) DO NOTHING''',
-                        (item['sku'],item['product_name'],item['category'],item_no,price,
-                         item['source_price_label'] or None,item['source_sheet'],item['source_description']))
                     cur.execute('''INSERT INTO public.products
                         (sku,product_name,category,source_item_number,source_price_ugx,
                          source_price_label,source_sheet,source_description)
