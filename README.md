@@ -1,33 +1,11 @@
-# Precision Packaging Corner Management System
+Precision Packaging Corner - Multi-Outlet Management System
 
-This starter uses:
-- GitHub for source code
-- Render Web Service for the Flask application
-- Render PostgreSQL for the database
+This version adds the Product Catalogue to the existing Render PostgreSQL login/dashboard foundation.
 
-## Important business structure
-The system has three outlets: Kikubo, Nabweru and Mbra. Nabweru is both the main receiving/distribution hub and a selling outlet. It must record its own direct sales, stock balances and payment reconciliation like the other outlets.
+Deployment: keep the existing Render service environment variables. The existing start command `python init_db.py && gunicorn app:app` remains correct. Push the contents of this folder to the existing GitHub repository's main branch, replacing files with matching names and adding catalogue_seed.csv and templates/products.html and templates/product_form.html.
 
-Product recovery rates, piece prices and bulk prices are separate configurable fields. Bulk pack size defaults to 50 but is stored per product.
+The startup script uses additive ALTER TABLE statements and inserts catalogue items with ON CONFLICT DO NOTHING. It does not drop tables or erase existing records.
 
-## Render environment variables
-Set these in the Render Web Service:
-- `DATABASE_URL`: use the **Internal Database URL** from the Render PostgreSQL database, because the web service and database are in the same region.
-- `SECRET_KEY`: a long random secret generated privately.
-- `OWNER_EMAIL`: initial owner email address.
-- `OWNER_PASSWORD`: a strong initial owner password.
-- `OWNER_FULL_NAME`: owner's display name.
+The catalogue is seeded from the workbook sheet `Kikubo Aug 26`, including 114 numbered product entries and the unnumbered Drip bags entry. Workbook `Price` is stored separately as `source_price_ugx`; it is not assumed to be a recovery rate or a selling price. Recovery rate, piece selling price and bulk-pack selling price remain blank until confirmed. Bulk pack quantity defaults to 50 pieces.
 
-Never put database URLs, passwords, or SECRET_KEY in GitHub.
-
-## First database initialisation
-For the first deployment, temporarily set the Render Web Service **Start Command** to:
-
-`python init_db.py && gunicorn app:app`
-
-This runs the idempotent schema setup before starting the web app. After the first successful initialisation, you may leave it in place; the schema uses `IF NOT EXISTS` and safe enum creation. Keep OWNER_EMAIL and OWNER_PASSWORD set only until the owner account has been created, then remove OWNER_PASSWORD from Render environment variables and redeploy.
-
-## Current scope and production caution
-This is a connection and database foundation. It provides login and a basic dashboard, but it is NOT yet the completed inventory/sales application. Product catalogue, opening stock import, stock receipts, transfers, sales entry, cash/mobile-money reconciliation, approvals, audit workflows and role/outlet restrictions must be implemented and tested before operational use.
-
-Before real business data is entered, implement proper server-side authorization for every operation, CSRF protection, secure session settings, database backups, and transactional stock/sales functions. Do not expose database credentials to the browser or commit them to GitHub.
+This is still an incremental development version. Stock opening balances, receipts, transfers, daily sales, tender reconciliation, approval workflows, audit/security hardening and backups remain to be built and tested before live operation.

@@ -1,25 +1,8 @@
 <!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{% block title %}Precision Packaging Corner{% endblock %}</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-</head>
-<body>
-<header class="topbar">
-  <div><strong>PRECISION PACKAGING CORNER</strong><small>Management System</small></div>
-  {% if current_user %}
-  <div class="userbar"><span>{{ current_user }} · {{ current_role }}</span>
-    <form method="post" action="{{ url_for('logout') }}"><button class="logout">Log out</button></form>
-  </div>
-  {% endif %}
-</header>
-<main class="container">
-  {% with messages = get_flashed_messages(with_categories=true) %}
-    {% for category, message in messages %}<div class="flash {{ category }}">{{ message }}</div>{% endfor %}
-  {% endwith %}
-  {% block content %}{% endblock %}
-</main>
-</body>
-</html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{% block title %}Precision Packaging Corner{% endblock %}</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"></head>
+<body><header class="topbar"><div><strong>PRECISION PACKAGING CORNER</strong><small>Management System</small></div>
+{% if current_user %}<nav><a href="{{ url_for('dashboard') }}">Dashboard</a><a href="{{ url_for('products') }}">Products</a></nav>
+<div class="userbar"><span>{{ current_user }} · {{ current_role }}</span><form method="post" action="{{ url_for('logout') }}"><button class="logout">Log out</button></form></div>{% endif %}</header>
+<main class="container">{% with messages = get_flashed_messages(with_categories=true) %}{% for category,message in messages %}<div class="flash {{ category }}">{{ message }}</div>{% endfor %}{% endwith %}{% block content %}{% endblock %}</main></body></html>

@@ -1,0 +1,116 @@
+sku,source_item_number,product_name,category,source_price_ugx,source_price_label,source_sheet,source_description
+PPC-001,1.0,Black Valve-1 Kg,With Valve,500.0,Price,Kikubo Aug 26 , Black Valve-1 Kg
+PPC-002,2.0,Black Valve-100gm,With Valve,500.0,Price,Kikubo Aug 26 , Black Valve-100gm
+PPC-003,3.0,Black Valve-250gm,With Valve,500.0,Price,Kikubo Aug 26 , Black Valve-250gm
+PPC-004,4.0,Black Valve-500gm,With Valve,500.0,Price,Kikubo Aug 26 , Black Valve-500gm
+PPC-005,5.0,Black Valve -50g,With Valve,500.0,Price,Kikubo Aug 26 ,Black Valve -50g
+PPC-006,6.0,Blue Valve-100gm,With Valve,500.0,Price,Kikubo Aug 26 ,Blue Valve-100gm
+PPC-007,7.0,Blue Valve-250gm,With Valve,500.0,Price,Kikubo Aug 26 ,Blue Valve-250gm
+PPC-008,8.0,Blue Valve-500gm,With Valve,500.0,Price,Kikubo Aug 26 ,Blue Valve-500gm
+PPC-009,9.0,Blue Valve-I Kg,With Valve,500.0,Price,Kikubo Aug 26 ,Blue Valve-I Kg
+PPC-010,10.0,Gold Valve-100gm,With Valve,500.0,Price,Kikubo Aug 26 ,Gold Valve-100gm
+PPC-011,11.0,Gold Valve-1Kg,With Valve,500.0,Price,Kikubo Aug 26 ,Gold Valve-1Kg
+PPC-012,12.0,Gold Valve-250gm,With Valve,500.0,Price,Kikubo Aug 26 ,Gold Valve-250gm
+PPC-013,13.0,Gold Valve-500gm,With Valve,500.0,Price,Kikubo Aug 26 ,Gold Valve-500gm
+PPC-014,14.0,Khaki Valve -100gm,With Valve,500.0,Price,Kikubo Aug 26 ,Khaki Valve -100gm
+PPC-015,15.0,Khaki Valve -1kg,With Valve,500.0,Price,Kikubo Aug 26 ,Khaki Valve -1kg
+PPC-016,16.0,Khaki Valve -250gm,With Valve,500.0,Price,Kikubo Aug 26 ,Khaki Valve -250gm
+PPC-017,17.0,Khaki Valve -500gm,With Valve,500.0,Price,Kikubo Aug 26 ,Khaki Valve -500gm
+PPC-018,18.0,Red Valve -1 kg,With Valve,500.0,Price,Kikubo Aug 26 ,Red Valve -1 kg
+PPC-019,19.0,Red Valve -100gm,With Valve,500.0,Price,Kikubo Aug 26 ,Red Valve -100gm
+PPC-020,20.0,Red Valve -250gm,With Valve,500.0,Price,Kikubo Aug 26 ,Red Valve -250gm
+PPC-021,21.0,Red Valve -500gm,With Valve,500.0,Price,Kikubo Aug 26 ,Red Valve -500gm
+PPC-022,22.0,Silver Valve-1 kg,With Valve,500.0,Price,Kikubo Aug 26 ,Silver Valve-1 kg
+PPC-023,23.0,Silver Valve-100gm,With Valve,500.0,Price,Kikubo Aug 26 ,Silver Valve-100gm
+PPC-024,24.0,Silver Valve-250gm,With Valve,500.0,Price,Kikubo Aug 26 ,Silver Valve-250gm
+PPC-025,25.0,Silver Valve-500gm,With Valve,500.0,Price,Kikubo Aug 26 ,Silver Valve-500gm
+PPC-026,26.0,White Valve-100gm,With Valve,500.0,Price,Kikubo Aug 26 ,White Valve-100gm
+PPC-027,27.0,White Valve-1kg,With Valve,500.0,Price,Kikubo Aug 26 ,White Valve-1kg
+PPC-028,28.0,White Valve-250gm,With Valve,500.0,Price,Kikubo Aug 26 ,White Valve-250gm
+PPC-029,29.0,White Valve-500gm,With Valve,500.0,Price,Kikubo Aug 26 ,White Valve-500gm
+PPC-030,30.0,Black  None Valve-500gm,None Valve,500.0,Price,Kikubo Aug 26 , Black  None Valve-500gm
+PPC-031,31.0,Black none Valve-1 Kg,None Valve,500.0,Price,Kikubo Aug 26 , Black none Valve-1 Kg
+PPC-032,32.0,Black None Valve-100gm,None Valve,500.0,Price,Kikubo Aug 26 , Black None Valve-100gm
+PPC-033,33.0,Black None Valve-250gm,None Valve,500.0,Price,Kikubo Aug 26 , Black None Valve-250gm
+PPC-034,34.0,Black None Valve- 50g,None Valve,500.0,Price,Kikubo Aug 26 ,Black None Valve- 50g
+PPC-035,35.0,Blue None Valve-100gm,None Valve,500.0,Price,Kikubo Aug 26 ,Blue None Valve-100gm
+PPC-036,36.0,Blue None Valve-250gm,None Valve,500.0,Price,Kikubo Aug 26 ,Blue None Valve-250gm
+PPC-037,37.0,Blue None Valve-500gm,None Valve,500.0,Price,Kikubo Aug 26 ,Blue None Valve-500gm
+PPC-038,38.0,Blue None Valve-I Kg,None Valve,500.0,Price,Kikubo Aug 26 ,Blue None Valve-I Kg
+PPC-039,39.0,Gold None Valve-100gm,None Valve,500.0,Price,Kikubo Aug 26 ,Gold None Valve-100gm
+PPC-040,40.0,Gold None Valve-1Kg,None Valve,500.0,Price,Kikubo Aug 26 ,Gold None Valve-1Kg
+PPC-041,41.0,Gold None Valve-250gm,None Valve,500.0,Price,Kikubo Aug 26 ,Gold None Valve-250gm
+PPC-042,42.0,Gold none Valve-500gm,None Valve,500.0,Price,Kikubo Aug 26 ,Gold none Valve-500gm
+PPC-043,43.0,Khaki none Valve -100gm,None Valve,500.0,Price,Kikubo Aug 26 ,Khaki none Valve -100gm
+PPC-044,44.0,Khaki none Valve -1kg,None Valve,500.0,Price,Kikubo Aug 26 ,Khaki none Valve -1kg
+PPC-045,45.0,Khaki none Valve -250gm,None Valve,500.0,Price,Kikubo Aug 26 ,Khaki none Valve -250gm
+PPC-046,46.0,Khaki None Valve -500gm,None Valve,500.0,Price,Kikubo Aug 26 ,Khaki None Valve -500gm
+PPC-047,47.0,Red None Valve -1 kg,None Valve,500.0,Price,Kikubo Aug 26 ,Red None Valve -1 kg
+PPC-048,48.0,Red None Valve -100gm,None Valve,500.0,Price,Kikubo Aug 26 ,Red None Valve -100gm
+PPC-049,49.0,Red None Valve -250gm,None Valve,500.0,Price,Kikubo Aug 26 ,Red None Valve -250gm
+PPC-050,50.0,Red None Valve -500gm,None Valve,500.0,Price,Kikubo Aug 26 ,Red None Valve -500gm
+PPC-051,51.0,Silver None Valve-1 kg,None Valve,500.0,Price,Kikubo Aug 26 ,Silver None Valve-1 kg
+PPC-052,52.0,Silver None Valve-100gm,None Valve,500.0,Price,Kikubo Aug 26 ,Silver None Valve-100gm
+PPC-053,53.0,Silver None Valve-250gm,None Valve,500.0,Price,Kikubo Aug 26 ,Silver None Valve-250gm
+PPC-054,54.0,Silver None Valve-500gm,None Valve,500.0,Price,Kikubo Aug 26 ,Silver None Valve-500gm
+PPC-055,55.0,White None Valve-100gm,None Valve,500.0,Price,Kikubo Aug 26 ,White None Valve-100gm
+PPC-056,56.0,White None Valve-1kg,None Valve,500.0,Price,Kikubo Aug 26 ,White None Valve-1kg
+PPC-057,57.0,White None Valve-250gm,None Valve,500.0,Price,Kikubo Aug 26 ,White None Valve-250gm
+PPC-058,58.0,White None Valve-500gm,None Valve,,,Kikubo Aug 26 ,White None Valve-500gm
+PPC-059,59.0,Black window-1 Kg,Window,500.0,Price,Kikubo Aug 26 , Black window-1 Kg
+PPC-060,60.0,Black window-100g,Window,500.0,Price,Kikubo Aug 26 , Black window-100g
+PPC-061,61.0,Black window-250g,Window,500.0,Price,Kikubo Aug 26 , Black window-250g
+PPC-062,62.0,Black window-500g,Window,500.0,Price,Kikubo Aug 26 , Black window-500g
+PPC-063,63.0,Blue window-100g,Window,500.0,Price,Kikubo Aug 26 ,Blue window-100g
+PPC-064,64.0,Blue window-250g,Window,500.0,Price,Kikubo Aug 26 ,Blue window-250g
+PPC-065,65.0,Blue window-500g,Window,500.0,Price,Kikubo Aug 26 ,Blue window-500g
+PPC-066,66.0,Blue window-I Kg,Window,500.0,Price,Kikubo Aug 26 ,Blue window-I Kg
+PPC-067,67.0,Gold Window-100g,Window,500.0,Price,Kikubo Aug 26 ,Gold Window-100g
+PPC-068,68.0,Gold Window-1Kg,Window,500.0,Price,Kikubo Aug 26 ,Gold Window-1Kg
+PPC-069,69.0,Gold Window-250g,Window,500.0,Price,Kikubo Aug 26 ,Gold Window-250g
+PPC-070,70.0,Gold Window-500g,Window,500.0,Price,Kikubo Aug 26 ,Gold Window-500g
+PPC-071,71.0,Khaki Window -100g,Window,500.0,Price,Kikubo Aug 26 ,Khaki Window -100g
+PPC-072,72.0,Khaki Window -1kg,Window,500.0,Price,Kikubo Aug 26 ,Khaki Window -1kg
+PPC-073,73.0,Khaki Window -250g,Window,500.0,Price,Kikubo Aug 26 ,Khaki Window -250g
+PPC-074,74.0,Khaki Window -500g,Window,500.0,Price,Kikubo Aug 26 ,Khaki Window -500g
+PPC-075,75.0,Red Window -1 kg,Window,500.0,Price,Kikubo Aug 26 ,Red Window -1 kg
+PPC-076,76.0,Red Window -100g,Window,500.0,Price,Kikubo Aug 26 ,Red Window -100g
+PPC-077,77.0,Red Window -250g,Window,500.0,Price,Kikubo Aug 26 ,Red Window -250g
+PPC-078,78.0,Red Window -500g,Window,500.0,Price,Kikubo Aug 26 ,Red Window -500g
+PPC-079,79.0,Silver window-1 kg,Window,500.0,Price,Kikubo Aug 26 ,Silver window-1 kg
+PPC-080,80.0,Silver window-100g,Window,500.0,Price,Kikubo Aug 26 ,Silver window-100g
+PPC-081,81.0,Silver window-250g,Window,500.0,Price,Kikubo Aug 26 ,Silver window-250g
+PPC-082,82.0,Silver window-500g,Window,500.0,Price,Kikubo Aug 26 ,Silver window-500g
+PPC-083,83.0,White window-100g,Window,500.0,Price,Kikubo Aug 26 ,White window-100g
+PPC-084,84.0,White window-1kg,Window,500.0,Price,Kikubo Aug 26 ,White window-1kg
+PPC-085,85.0,White window-250g,Window,500.0,Price,Kikubo Aug 26 ,White window-250g
+PPC-088,88.0,White window-500g,Window,500.0,Price,Kikubo Aug 26 ,White window-500g
+PPC-089,89.0,Transparent -1kg,Transparent,500.0,Price,Kikubo Aug 26 ,Transparent -1kg
+PPC-090,90.0,Transparent -500g,Transparent,500.0,Price,Kikubo Aug 26 ,Transparent -500g
+PPC-091,91.0,Transparent -250g,Transparent,500.0,Price,Kikubo Aug 26 ,Transparent -250g
+PPC-092,92.0,Transparent -100g,Transparent,500.0,Price,Kikubo Aug 26 ,Transparent -100g
+PPC-093,93.0,Translucent -1kg,Translucent,500.0,Price,Kikubo Aug 26 ,Translucent -1kg
+PPC-094,94.0,Translucent -500g,Translucent,500.0,Price,Kikubo Aug 26 ,Translucent -500g
+PPC-095,95.0,Translucent -250g,Translucent,500.0,Price,Kikubo Aug 26 ,Translucent -250g
+PPC-096,96.0,Translucent -100g,Translucent,500.0,Price,Kikubo Aug 26 ,Translucent -100g
+PPC-097,97.0,Black Valve -1kg,Doy with Valve,500.0,Price,Kikubo Aug 26 ,Black Valve -1kg
+PPC-098,98.0,Black Valve-500g,Doy with Valve,500.0,Price,Kikubo Aug 26 ,Black Valve-500g
+PPC-099,99.0,Black Valve-250g,Doy with Valve,500.0,Price,Kikubo Aug 26 ,Black Valve-250g
+PPC-100,100.0,Black Valve-100g,Doy with Valve,500.0,Price,Kikubo Aug 26 ,Black Valve-100g
+PPC-101,101.0,White Valve- 1kg,Doy with Valve,500.0,Price,Kikubo Aug 26 ,White Valve- 1kg
+PPC-102,102.0,White Valve -500g,Doy with Valve,500.0,Price,Kikubo Aug 26 ,White Valve -500g
+PPC-103,103.0,White Valve- 250g,Doy with Valve,500.0,Price,Kikubo Aug 26 ,White Valve- 250g
+PPC-104,104.0,White Valve- 100g,Doy with Valve,500.0,Price,Kikubo Aug 26 ,White Valve- 100g
+PPC-105,105.0,Black non valve - 1kg,Doy No valve,500.0,Price,Kikubo Aug 26 ,Black non valve - 1kg
+PPC-106,106.0,Black no valve - 500g,Doy No valve,500.0,Price,Kikubo Aug 26 ,Black no valve - 500g
+PPC-107,107.0,Black no valve - 250g,Doy No valve,500.0,Price,Kikubo Aug 26 ,Black no valve - 250g
+PPC-108,108.0,Black no valve -100g,Doy No valve,500.0,Price,Kikubo Aug 26 ,Black no valve -100g
+PPC-109,109.0,White no Valve -1kg,Doy No valve,500.0,Price,Kikubo Aug 26 ,White no Valve -1kg
+PPC-110,110.0,White no Valve -500g,Doy No valve,500.0,Price,Kikubo Aug 26 ,White no Valve -500g
+PPC-111,111.0,White no Valve -250g,Doy No valve,500.0,Price,Kikubo Aug 26 ,White no Valve -250g
+PPC-112,112.0,White no valve -100g,Doy No valve,500.0,Price,Kikubo Aug 26 ,White no valve -100g
+PPC-113,113.0,Filter bags,Accessories,50.0,Price,Kikubo Aug 26 ,Filter bags
+PPC-114,114.0,Khaki,Accessories,150.0,Price,Kikubo Aug 26 ,Khaki
+PPC-115,115.0,Black,Accessories,150.0,Price,Kikubo Aug 26 ,Black
+PPC-116,116.0,White,Accessories,150.0,Price,Kikubo Aug 26 ,White
+PPC-DRIP-001,,Drip bags,Accessories,,,Kikubo Aug 26 ,Drip bags 

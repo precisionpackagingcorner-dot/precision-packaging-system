@@ -1,25 +1,5 @@
-{% extends "base.html" %}
-{% block title %}Dashboard | Precision Packaging{% endblock %}
-{% block content %}
-<div class="page-heading">
-  <div><p class="eyebrow">OVERVIEW</p><h1>Dashboard</h1><p class="muted">Your three-outlet business at a glance.</p></div>
-  <span class="connection">{{ connection_message }}</span>
-</div>
-<div class="cards">
-  <article><span>Active products</span><strong>{{ totals.products }}</strong></article>
-  <article><span>Active outlets</span><strong>{{ totals.outlets }}</strong></article>
-  <article><span>Units in stock</span><strong>{{ "{:,}".format(totals.stock_units) }}</strong></article>
-</div>
-<section class="panel">
-  <h2>Recent stock movements</h2>
-  {% if recent_movements %}
-  <div class="table-wrap"><table><thead><tr><th>Date</th><th>Outlet/location</th><th>Product</th><th>Movement</th><th>Quantity</th><th>Status</th></tr></thead><tbody>
-  {% for row in recent_movements %}<tr><td>{{ row.occurred_at.strftime("%d %b %Y %H:%M") if row.occurred_at else "" }}</td><td>{{ row.location_name }}</td><td>{{ row.product_name }}</td><td>{{ row.movement_type }}</td><td>{{ row.quantity }}</td><td>{{ row.status }}</td></tr>{% endfor %}
-  </tbody></table></div>
-  {% else %}<p class="muted">No stock movements recorded yet.</p>{% endif %}
-</section>
-<section class="note">
-  <strong>Outlet structure</strong>
-  <p>Kikubo · Nabweru · Mbra. Nabweru handles receiving and distribution while also recording its own direct sales.</p>
-</section>
-{% endblock %}
+{% extends "base.html" %}{% block title %}Dashboard | Precision Packaging{% endblock %}{% block content %}
+<div class="page-heading"><div><p class="eyebrow">OVERVIEW</p><h1>Dashboard</h1><p class="muted">Your three-outlet business at a glance.</p></div><span class="connection">{{ connection_message }}</span></div>
+<div class="cards"><article><span>Active products</span><strong>{{ totals.products }}</strong></article><article><span>Active outlets</span><strong>{{ totals.outlets }}</strong></article><article><span>Units in stock</span><strong>{{ "{:,}".format(totals.stock_units) }}</strong></article></div>
+<section class="panel"><h2>Recent stock movements</h2>{% if recent_movements %}<div class="table-wrap"><table><thead><tr><th>Date</th><th>Outlet/location</th><th>Product</th><th>Movement</th><th>Quantity</th><th>Status</th></tr></thead><tbody>{% for row in recent_movements %}<tr><td>{{ row.occurred_at.strftime("%d %b %Y %H:%M") if row.occurred_at else "" }}</td><td>{{ row.location_name }}</td><td>{{ row.product_name }}</td><td>{{ row.movement_type }}</td><td>{{ row.quantity }}</td><td>{{ row.status }}</td></tr>{% endfor %}</tbody></table></div>{% else %}<p class="muted">No stock movements recorded yet.</p>{% endif %}</section>
+<section class="note"><strong>Outlet structure</strong><p>Kikubo · Nabweru · Mbra. Nabweru handles receiving and distribution while also recording its own direct sales.</p></section>{% endblock %}
